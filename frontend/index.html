@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+
+{% block title %}Fruitkha - Trang Chủ{% endblock %}
+
+{% block content %}
+<!-- hero area -->
+<div class="hero-area hero-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 offset-lg-2 text-center">
+                <div class="hero-text">
+                    <div class="hero-text-tablecell">
+                        <p class="subtitle">Tươi & Hữu Cơ</p>
+                        <h1>Hoa Quả Ngon Theo Mùa</h1>
+                        <div class="hero-btns">
+                            <a href="{{ url_for('shop') }}" class="boxed-btn">Nhận Diện Hoa Quả</a>
+                            <a href="{{ url_for('history') }}" class="bordered-btn">Lịch sử nhận diện</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end hero area -->
+
+<!-- features list section -->
+<div class="list-section pt-80 pb-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                <div class="list-box d-flex align-items-center">
+                    <div class="list-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <div class="content">
+                        <h3>Miễn phí vận chuyển</h3>
+                        <p>Khi đặt hàng trên 300k</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                <div class="list-box d-flex align-items-center">
+                    <div class="list-icon">
+                        <i class="fas fa-phone-volume"></i>
+                    </div>
+                    <div class="content">
+                        <h3>Hỗ Trợ 24/7</h3>
+                        <p>Nhận hỗ trợ cả ngày</p>
+                        <p>Hot line: 0366602046</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="list-box d-flex justify-content-start align-items-center">
+                    <div class="list-icon">
+                        <i class="fas fa-sync"></i>
+                    </div>
+                    <div class="content">
+                        <h3>Hoàn Trả</h3>
+                        <p>Nhận hoàn tiền trong vòng 3 ngày!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end features list section -->
+
+<!-- product section -->
+<div class="product-section mt-150 mb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="section-title">    
+                    <h3><span class="orange-text">Sản Phẩm</span> Khác</h3>
+                    <p>🍎 Tận hưởng vị tươi ngon từ thiên nhiên – Hoa quả sạch, an toàn, đầy dinh dưỡng, mang đến sức khỏe dồi dào và niềm vui mỗi ngày cho bạn và gia đình! 🍊🥭🍇</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 text-center">
+                <div class="single-product-item">
+                    <div class="product-image">
+                        <a href="single-product.html"><img src="{{ url_for('static', filename='assets/img/products/product-img-1.jpg') }}" alt=""></a>
+                    </div>
+                    <h3>Dâu Tây</h3>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 text-center">
+                <div class="single-product-item">
+                    <div class="product-image">
+                        <a href="single-product.html"><img src="{{ url_for('static', filename='assets/img/products/product-img-2.jpg') }}" alt=""></a>
+                    </div>
+                    <h3>Quả Mọng</h3>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 offset-md-3 offset-lg-0 text-center">
+                <div class="single-product-item">
+                    <div class="product-image">
+                        <a href="single-product.html"><img src="{{ url_for('static', filename='assets/img/products/product-img-3.jpg') }}" alt=""></a>
+                    </div>
+                    <h3>Chanh Vàng</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end product section -->
+
+<!-- shop banner -->
+<section class="shop-banner">
+    <div class="container">
+        <h3>Khuyến mãi tháng 4 đã bắt đầu! <br> với những <span class="orange-text">Voucher...</span></h3>
+        <div class="sale-percent"><span>Khuyễn mãi! <br> lên đến</span>50% <span></span></div>
+        <a href="shop.html" class="cart-btn btn-lg">Mua sắm ngay</a>
+    </div>
+</section>
+<!-- end shop banner -->
+
+<!-- latest news -->
+<div class="latest-news pt-150 pb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="section-title">    
+                    <h3><span class="orange-text">Tin Tức</span> Khác</h3>
+                    <p>"Khi lựa chọn rau củ quả, hãy ưu tiên chọn những loại tươi ngon, phù hợp với nhu cầu dinh dưỡng của bản thân và gia đình, để đảm bảo sức khỏe và cung cấp đầy đủ vitamin cần thiết."</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="single-latest-news">
+                    <a href="single-news.html"><div class="latest-news-bg news-bg-1"></div></a>
+                    <div class="news-text-box">
+                        <h3><a href="single-news.html">Vị ngọt tự nhiên, lợi ích tuyệt vời cho sức khỏe.</a></h3>
+                        <p class="blog-meta">
+                            <span class="author"><i class="fas fa-user"></i> Admin</span>
+                            <span class="date"><i class="fas fa-calendar"></i> 1 tháng 4, 2025</span>
+                        </p>
+                        <p class="excerpt">Dâu tây không chỉ là loại trái cây thơm ngon, mà còn chứa nhiều dưỡng chất tốt cho sức khỏe. Với lượng vitamin C dồi dào, dâu tây giúp tăng cường hệ miễn dịch và làm đẹp da. Ngoài ra, dâu tây giúp bảo vệ cơ thể khỏi các tác nhân gây hại và hỗ trợ hệ tim mạch.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="single-latest-news">
+                    <a href="single-news.html"><div class="latest-news-bg news-bg-2"></div></a>
+                    <div class="news-text-box">
+                        <h3><a href="single-news.html">Rau Củ Quả Sạch - Lựa Chọn Tốt Cho Sức Khỏe Và Môi Trường</a></h3>
+                        <p class="blog-meta">
+                            <span class="author"><i class="fas fa-user"></i> Admin</span>
+                            <span class="date"><i class="fas fa-calendar"></i> 31 tháng 3, 2025</span>
+                        </p>
+                        <p class="excerpt">Rau củ quả sạch không chỉ an toàn, không chứa hóa chất độc hại mà còn bảo vệ sức khỏe và môi trường. Lựa chọn thực phẩm sạch giúp cung cấp dinh dưỡng tự nhiên, hỗ trợ hệ miễn dịch và giảm nguy cơ mắc bệnh.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 offset-md-3 offset-lg-0">
+                <div class="single-latest-news">
+                    <a href="single-news.html"><div class="latest-news-bg news-bg-3"></div></a>
+                    <div class="news-text-box">
+                        <h3><a href="single-news.html">Sức Mạnh Của Những Ý Nghĩ Tích Cực</a></h3>
+                        <p class="blog-meta">
+                            <span class="author"><i class="fas fa-user"></i> Admin</span>
+                            <span class="date"><i class="fas fa-calendar"></i> 27 tháng 3, 2025</span>
+                        </p>
+                        <p class="excerpt">Những suy nghĩ tích cực không chỉ giúp tâm hồn thư thái mà còn tạo ra kết quả tốt đẹp trong cuộc sống, giống như những trái ngọt tươi ngon. Khi ta nuôi dưỡng suy nghĩ lạc quan, cuộc sống sẽ trở nên tràn đầy hy vọng và thành công.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end latest news -->
+{% endblock %}

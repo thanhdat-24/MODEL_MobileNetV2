@@ -1,0 +1,555 @@
+{% extends "layout.html" %}
+
+{% block title %}Fruitkha - Lịch Sử Nhận Diện{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Fix header cho trang lịch sử */
+.top-header-area {
+    background: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.main-menu ul li a {
+    color: #051922 !important;
+}
+
+.main-menu ul li.current-list-item a {
+    color: #F28123 !important;
+}
+
+.main-menu ul li:hover > a {
+    color: #F28123 !important;
+}
+
+.user-info .username {
+    color: #051922 !important;
+}
+
+.user-info .fa-angle-down {
+    color: #051922 !important;
+}
+
+.search-bar-icon i {
+    color: #051922 !important;
+}
+
+.site-logo img {
+    filter: brightness(0.2);
+}
+
+/* Lịch Sử Nhận Diện Styles */
+.history-section {
+    padding: 120px 15px 60px 15px;
+    background-color: #f8f9fa;
+}
+
+.history-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.history-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.history-header h1 {
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 700;
+    color: #051922;
+    margin-bottom: 15px;
+    word-wrap: break-word;
+}
+
+.history-header p {
+    color: #777;
+    font-size: clamp(14px, 2.5vw, 18px);
+    line-height: 1.5;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.history-item {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.history-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.history-image {
+    width: 100%;
+    max-width: 150px;
+}
+
+.history-image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.history-content {
+    width: 100%;
+    text-align: center;
+}
+
+.history-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #051922;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.history-title i {
+    color: #F28123;
+}
+
+.history-meta {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.history-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.result-badge {
+    background: #f8f9fa;
+    color: #333;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.result-badge.primary {
+    background: #F28123;
+    color: white;
+    font-weight: 600;
+}
+
+.result-badge .confidence {
+    font-weight: 600;
+    margin-left: 5px;
+}
+
+.result-badge:not(.primary):hover {
+    background: rgba(242, 129, 35, 0.1);
+    color: #F28123;
+}
+
+/* Improved No History Design */
+.no-history {
+    text-align: center;
+    padding: 80px 30px;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    margin: 0 auto;
+    max-width: 600px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.no-history::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #F28123, #FFA62B);
+    animation: shimmer 2s infinite linear;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.no-history-icon-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 30px;
+}
+
+.no-history-icon-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: #F28123;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: pulse 2s infinite;
+    box-shadow: 0 10px 30px rgba(242, 129, 35, 0.3);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(242, 129, 35, 0.5), 0 10px 30px rgba(242, 129, 35, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 0 25px rgba(242, 129, 35, 0), 0 10px 30px rgba(242, 129, 35, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(242, 129, 35, 0), 0 10px 30px rgba(242, 129, 35, 0.3);
+    }
+}
+
+.no-history-icon-circle i {
+    font-size: 60px;
+    color: white;
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.no-history h3 {
+    font-size: clamp(24px, 5vw, 36px);
+    color: #051922;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+}
+
+.no-history p {
+    color: #666;
+    margin-bottom: 40px;
+    font-size: clamp(16px, 2.5vw, 20px);
+    line-height: 1.7;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-primary {
+    background: #F28123;
+    color: white;
+    padding: 16px 35px;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(242, 129, 35, 0.3);
+    gap: 12px;
+}
+
+.btn-primary:hover {
+    background: #e67012;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(242, 129, 35, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.btn-primary i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.btn-primary:hover i {
+    transform: translateX(3px);
+}
+
+.no-history-decorative {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(242, 129, 35, 0.05);
+    z-index: -1;
+}
+
+.no-history-decorative::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: rgba(242, 129, 35, 0.03);
+}
+
+/* Fruit Icons Animation */
+.floating-fruits {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-fruit {
+    position: absolute;
+    font-size: 40px;
+    opacity: 0.1;
+    animation: floatFruit 8s infinite ease-in-out;
+}
+
+.fruit-1 {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.fruit-2 {
+    top: 40%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.fruit-3 {
+    bottom: 30%;
+    left: 20%;
+    animation-delay: 1s;
+}
+
+.fruit-4 {
+    bottom: 20%;
+    right: 10%;
+    animation-delay: 3s;
+}
+
+@keyframes floatFruit {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(10px, -15px) rotate(5deg);
+    }
+    50% {
+        transform: translate(-5px, -25px) rotate(-5deg);
+    }
+    75% {
+        transform: translate(-10px, -10px) rotate(3deg);
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+    .history-section {
+        padding: 120px 0 60px;
+    }
+    
+    .history-item {
+        flex-direction: row;
+        padding: 20px;
+        text-align: left;
+    }
+    
+    .history-image {
+        flex: 0 0 150px;
+        max-width: 150px;
+    }
+    
+    .history-content {
+        flex: 1;
+        margin-left: 20px;
+        text-align: left;
+    }
+    
+    .history-title {
+        justify-content: flex-start;
+    }
+    
+    .history-meta {
+        justify-content: flex-start;
+    }
+    
+    .history-results {
+        justify-content: flex-start;
+    }
+    
+    .no-history {
+        padding: 100px 50px;
+    }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 480px) {
+    .history-section {
+        padding: 100px 10px 40px;
+    }
+    
+    .history-item {
+        padding: 12px;
+    }
+    
+    .result-badge {
+        font-size: 12px;
+        padding: 3px 10px;
+    }
+    
+    .no-history {
+        padding: 50px 15px;
+    }
+    
+    .no-history-icon-container {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .no-history-icon-circle {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .no-history-icon-circle i {
+        font-size: 40px;
+    }
+}
+
+/* Fix cho container trang lịch sử */
+body.history-page {
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %}
+
+{% block content_header %}
+{% endblock %}
+
+{% block content %}
+<section class="history-section">
+    <div class="history-container">
+        <div class="history-header">
+            <h1>Lịch Sử Nhận Diện</h1>
+            <p>Xem lại các hoa quả bạn đã nhận diện trước đây</p>
+        </div>
+
+        {% if history %}
+        <div class="history-list">
+            {% for item in history %}
+            <div class="history-item">
+                <div class="history-image">
+                    <img src="{{ item.hinh_anh }}" alt="Hình ảnh đã nhận diện">
+                </div>
+                <div class="history-content">
+                    <h3 class="history-title">
+                        <i class="fas fa-leaf"></i>
+                        {{ item.ten_san_pham }}
+                    </h3>
+                    <p class="history-meta">
+                        <i class="fas fa-clock"></i> 
+                        {{ item.thoi_gian|formatdate("%d/%m/%Y %H:%M") }}
+                    </p>
+                    <div class="history-results">
+                        {% for result in item.ket_qua %}
+                        <div class="result-badge {% if loop.first %}primary{% endif %}">
+                            {{ result.label }}
+                            <span class="confidence">{{ "{:.1f}%".format(result.confidence * 100) }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-history">
+            <div class="no-history-decorative"></div>
+            <div class="floating-fruits">
+                <div class="floating-fruit fruit-1">🍎</div>
+                <div class="floating-fruit fruit-2">🍊</div>
+                <div class="floating-fruit fruit-3">🍇</div>
+                <div class="floating-fruit fruit-4">🍋</div>
+            </div>
+            
+            <div class="no-history-icon-container">
+                <div class="no-history-icon-circle">
+                    <i class="fas fa-history"></i>
+                </div>
+            </div>
+            
+            <h3>Chưa có lịch sử</h3>
+            <p>Bạn chưa thực hiện bất kỳ lần nhận diện nào.<br>Hãy bắt đầu khám phá thế giới hoa quả với chúng tôi!</p>
+            <a href="{{ url_for('shop') }}" class="btn-primary">
+                <i class="fas fa-search"></i> Nhận Diện Ngay
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Thêm class để body biết đang ở trang lịch sử
+document.body.classList.add('history-page');
+</script>
+{% endblock %}

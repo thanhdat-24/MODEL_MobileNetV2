@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruitkha - Đăng Nhập</title>
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary: #F28123;
+            --primary-light: #ff9d4c;
+            --primary-dark: #e47418;
+            --secondary: #051922;
+            --text-dark: #333;
+            --text-light: #777;
+            --bg-light: #f8f9fa;
+            --bg-gradient: linear-gradient(135deg, #f28123 0%, #ff9d4c 100%);
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 6px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            overflow: hidden;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            background-color: white;
+            position: relative;
+            min-height: 600px;
+        }
+
+        .login-image {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .login-image {
+                display: block;
+            }
+        }
+
+        .login-image-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("{{ url_for('static', filename='assets/img/hero-bg.jpg') }}") center center;
+            background-size: cover;
+            z-index: 1;
+        }
+
+        .login-image-inner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(5, 25, 34, 0.8), rgba(242, 129, 35, 0.4));
+            z-index: 2;
+        }
+
+        .login-image-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 50px;
+            color: white;
+            z-index: 3;
+        }
+
+        .login-image-logo {
+            margin-bottom: 30px;
+            max-width: 180px;
+        }
+
+        .login-image-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .login-image-subtitle {
+            font-size: 16px;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .features-list {
+            list-style: none;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .features-list i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .login-form-container {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group i.prefix-icon {
+            position: absolute;
+            left: 15px;
+            color: var(--text-light);
+            font-size: 18px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid #e1e5eb;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(242, 129, 35, 0.1);
+            background-color: white;
+        }
+
+        /* Improved password toggle positioning */
+        .password-field {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            background: none;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+
+        .custom-checkbox input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 18px;
+            width: 18px;
+            background-color: var(--bg-light);
+            border: 1px solid #e1e5eb;
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .custom-checkbox input:checked ~ .checkmark {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .custom-checkbox .checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .forgot-password {
+            color: var(--text-light);
+            font-size: 14px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .forgot-password:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--bg-gradient);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 15px 25px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2));
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .btn:hover::after {
+            opacity: 1;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .register-text {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .register-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .register-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .social-login {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .social-login-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .social-login-text::before,
+        .social-login-text::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: #e1e5eb;
+        }
+
+        .social-login-text::before {
+            margin-right: 15px;
+        }
+
+        .social-login-text::after {
+            margin-left: 15px;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--text-dark);
+            font-size: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid #e1e5eb;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .social-btn.facebook {
+            color: #3b5998;
+        }
+
+        .social-btn.google {
+            color: #db4437;
+        }
+
+        .social-btn.apple {
+            color: #000;
+        }
+
+        .back-to-site {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-to-site i {
+            margin-right: 8px;
+        }
+
+        .back-to-site:hover {
+            color: var(--primary);
+        }
+
+        .error-message {
+            background-color: #feeaeb;
+            border-left: 3px solid #f86168;
+            color: #f44336;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 25px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-message i {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        @media (max-width: 991px) {
+            .login-form-container {
+                padding: 40px;
+            }
+
+            .login-image-content {
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .login-container {
+                max-width: 450px;
+            }
+
+            .login-form-container {
+                padding: 30px;
+            }
+
+            .login-title {
+                font-size: 24px;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+
+        /* Floating Fruits Animation */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .floating-fruit {
+            position: absolute;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .fruit-1 {
+            top: 10%;
+            left: 10%;
+            width: 60px;
+            height: 60px;
+            background: url("{{ url_for('static', filename='assets/img/products/product-img-1.jpg') }}") center center;
+            background-size: cover;
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .fruit-2 {
+            top: 70%;
+            left: 15%;
+            width: 80px;
+            height: 80px;
+            background: url("{{ url_for('static', filename='assets/img/products/product-img-2.jpg') }}") center center;
+            background-size: cover;
+            border-radius: 50%;
+            animation: float 18s infinite ease-in-out reverse;
+        }
+
+        .fruit-3 {
+            top: 40%;
+            right: 15%;
+            width: 70px;
+            height: 70px;
+            background: url("{{ url_for('static', filename='assets/img/products/product-img-3.jpg') }}") center center;
+            background-size: cover;
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .fruit-4 {
+            top: 20%;
+            right: 10%;
+            width: 50px;
+            height: 50px;
+            background: url("{{ url_for('static', filename='assets/img/products/product-img-5.jpg') }}") center center;
+            background-size: cover;
+            border-radius: 50%;
+            animation: float 12s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Fruits Background -->
+    <div class="floating-elements">
+        <div class="floating-fruit fruit-1"></div>
+        <div class="floating-fruit fruit-2"></div>
+        <div class="floating-fruit fruit-3"></div>
+        <div class="floating-fruit fruit-4"></div>
+    </div>
+
+    <!-- Back to site link -->
+    <a href="{{ url_for('index') }}" class="back-to-site">
+        <i class="fas fa-arrow-left"></i> Quay lại trang chủ
+    </a>
+
+    <div class="login-container">
+        <!-- Left Side - Image -->
+        <div class="login-image">
+            <div class="login-image-inner"></div>
+            <div class="login-image-content">
+                <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Fruitkha Logo" class="login-image-logo">
+                <h2 class="login-image-title">Chào mừng đến với Fruitkha</h2>
+                <p class="login-image-subtitle">Hệ thống cung cấp trái cây hàng đầu với công nghệ nhận diện thông minh</p>
+                
+                <ul class="features-list">
+                    <li><i class="fas fa-check-circle"></i> Nhận diện chính xác loại hoa quả</li>
+                    <li><i class="fas fa-check-circle"></i> Sản phẩm tươi ngon, hữu cơ</li>
+                    <li><i class="fas fa-check-circle"></i> Giao hàng nhanh chóng, miễn phí</li>
+                    <li><i class="fas fa-check-circle"></i> Phục vụ 24/7, hỗ trợ tận tâm</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Side - Form -->
+        <div class="login-form-container">
+            <div class="login-header">
+                <h1 class="login-title">Đăng Nhập</h1>
+                <p class="login-subtitle">Vui lòng đăng nhập để tiếp tục</p>
+            </div>
+
+            {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <label for="username">Tên đăng nhập</label>
+                    <div class="input-group">
+                        <i class="fas fa-user prefix-icon"></i>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Nhập tên đăng nhập" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock prefix-icon"></i>
+                        <div class="password-field">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
+                            <button type="button" class="password-toggle" id="passwordToggle">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <div class="remember-me">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" name="remember" id="remember">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label for="remember">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="btn">Đăng Nhập</button>
+            </form>
+
+            <div class="login-footer">
+                <p class="register-text">Chưa có tài khoản? <a href="#" class="register-link">Đăng ký ngay</a></p>
+            </div>
+
+            <div class="social-login">
+                <div class="social-login-text">Hoặc đăng nhập với</div>
+                <div class="social-buttons">
+                    <a class="social-btn facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="social-btn google">
+                        <i class="fab fa-google"></i>
+                    </a>
+                    <a class="social-btn apple">
+                        <i class="fab fa-apple"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        document.getElementById('passwordToggle').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    </script>
+</body>
+</html>

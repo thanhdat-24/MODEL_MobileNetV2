@@ -1,0 +1,395 @@
+{% extends "layout.html" %}
+
+{% block title %}Fruitkha - Nhận Diện Hoa Quả Cao Cấp{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Search Results Container */
+    .search-results-container {
+        margin-top: 40px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        border-left: 4px solid #F28123;
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .search-results-header {
+        margin-bottom: 20px;
+    }
+
+        .search-results-header h4 {
+            font-size: 20px;
+            color: #051922;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+    .search-reason {
+        color: #666;
+        font-size: 15px;
+        font-style: italic;
+    }
+
+    .search-results-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .search-result-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .search-result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .search-result-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+    .search-info {
+        padding: 15px;
+    }
+
+        .search-info a {
+            display: block;
+            font-weight: 600;
+            color: #051922;
+            text-decoration: none;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            font-size: 16px;
+        }
+
+            .search-info a:hover {
+                color: #F28123;
+            }
+
+    .search-source {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 8px;
+    }
+
+    .search-confidence {
+        background: #F28123;
+        color: white;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 13px;
+        display: inline-block;
+        font-weight: 500;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .search-results-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .search-results-container {
+            padding: 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Enhanced Breadcrumb Section -->
+<section class="breadcrumb-section">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <div class="subtitle">Tươi & Hữu Cơ</div>
+            <h1>Nhận Diện Hoa Quả</h1>
+            <p class="description">Khám phá thế giới rau củ quả tươi ngon với công nghệ nhận diện AI tiên tiến, giúp bạn lựa chọn sản phẩm chất lượng cao, an toàn và nhiều dinh dưỡng cho cả gia đình.</p>
+        </div>
+    </div>
+</section>
+<!-- End Breadcrumb Section -->
+
+<!-- Main Recognition Section -->
+<section class="recognition-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="recognition-card fade-in">
+                    <div class="card-header">
+                        <h2><i class="fas fa-leaf"></i> Nhận Diện Thông Minh</h2>
+                        <div class="subtitle">Tải lên hình ảnh hoa quả và nhận kết quả phân tích chính xác trong vài giây</div>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Drop Zone -->
+                        <div class="drop-zone" id="dropZone">
+                            <div class="tips-container" id="recognitionTips">
+                                <div class="tips-header">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <h4>Mẹo Nhận Diện Chính Xác</h4>
+                                </div>
+                                <div class="tips-content">
+                                    <ul>
+                                        <li><i class="fas fa-check-circle"></i> Chụp ảnh trong điều kiện ánh sáng tốt, tránh bóng đổ</li>
+                                        <li><i class="fas fa-check-circle"></i> Đặt hoa quả trên nền đơn giản, tốt nhất là màu trắng</li>
+                                        <li><i class="fas fa-check-circle"></i> Chụp cận cảnh, đảm bảo hoa quả chiếm phần lớn khung hình</li>
+                                        <li><i class="fas fa-check-circle"></i> Loại bỏ các vật thể khác xung quanh hoa quả</li>
+                                        <li><i class="fas fa-check-circle"></i> Nếu có nhiều loại hoa quả, chỉ chụp một loại mỗi lần</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="drop-zone-prompt">
+                                <i class="fas fa-cloud-upload-alt drop-icon"></i>
+                                <div class="drop-title">Kéo thả hình ảnh vào đây</div>
+                                <div class="drop-subtitle">hoặc nhấn vào để chọn file từ thiết bị của bạn</div>
+                                <div class="btn btn-secondary">
+                                    <i class="fas fa-image"></i> Chọn Hình Ảnh
+                                </div>
+                            </div>
+                            <img class="preview-image" id="previewImage" src="#" alt="Preview">
+                            <input type="file" class="file-input" id="fruit360-imageUpload" accept="image/*">
+                        </div>
+
+                        <!-- Upload Controls -->
+                        <div class="upload-controls">
+                            <button class="btn btn-secondary" id="changeImageBtn">
+                                <i class="fas fa-exchange-alt"></i> Thay Đổi Ảnh
+                            </button>
+                            <button class="btn btn-primary btn-large" id="recognizeBtn" disabled>
+                                <i class="fas fa-search"></i> Nhận Diện Ngay
+                            </button>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div class="loading-container" id="loadingContainer">
+                            <div class="spinner"></div>
+                            <div class="loading-text">Đang phân tích hình ảnh...</div>
+                        </div>
+
+                        <!-- Results Container -->
+                        <div class="results-container" id="resultsContainer">
+                            <div class="results-header">
+                                <h3 class="results-title"><i class="fas fa-check-circle"></i> Kết Quả Nhận Diện</h3>
+                                <div class="results-actions">
+                                    <button id="shareResultsBtn" title="Chia sẻ kết quả">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                    <button id="downloadResultsBtn" title="Tải về kết quả">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="resultsList"></div>
+                        </div>
+
+                        <!-- Search Results Container -->
+                        <div class="search-results-container" id="searchResultsContainer" style="display: none;">
+                            <div class="search-results-header">
+                                <h4>🔍 Tìm kiếm ảnh tương tự</h4>
+                                <p class="search-reason"></p>
+                            </div>
+                            <div class="search-results-grid" id="searchResultsList">
+                                <!-- Results will be inserted here -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Recognition Section -->
+
+<!-- Featured Products Section -->
+<section class="featured-section">
+    <div class="container">
+        <div class="section-title-wrap fade-in">
+            <div class="section-subtitle">Khám Phá</div>
+            <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
+            <p class="section-description">Những sản phẩm hoa quả tươi ngon được tuyển chọn kỹ lưỡng từ những vùng trồng sạch nhất, đảm bảo chất lượng và dinh dưỡng cho bạn và gia đình.</p>
+        </div>
+
+        <div class="category-filter fade-in">
+            <button class="filter-btn active" data-filter="all">Tất Cả</button>
+            <button class="filter-btn" data-filter="strawberry">Dâu Tây</button>
+            <button class="filter-btn" data-filter="berry">Quả Mọng</button>
+            <button class="filter-btn" data-filter="tropical">Nhiệt Đới</button>
+            <button class="filter-btn" data-filter="citrus">Họ Cam Quýt</button>
+            <button class="filter-btn" data-filter="organic">Hữu Cơ</button>
+        </div>
+
+        <div class="product-grid fade-in">
+            <!-- Product 1 -->
+            <div class="product-card" data-category="strawberry">
+                <span class="product-badge badge-new">Mới</span>
+                <div class="product-thumb">
+                    <img src="{{ url_for('static', filename='assets/img/products/product-img-1.jpg') }}" alt="Dâu tây">
+                    <div class="product-actions">
+                        <a class="action-btn" title="Yêu thích"><i class="far fa-heart"></i></a>
+                        <a class="action-btn" title="So sánh"><i class="fas fa-exchange-alt"></i></a>
+                        <a class="action-btn" title="Xem nhanh"><i class="far fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-category">Dâu Tây</div>
+                    <h3 class="product-title">Dâu Tây Đà Lạt Premium</h3>
+                    <div class="product-price">
+                        <span class="current-price">95.000đ</span>
+                        <span class="old-price">120.000đ</span>
+                    </div>
+                    <button class="add-to-cart">
+                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card" data-category="berry">
+                <div class="product-thumb">
+                    <img src="{{ url_for('static', filename='assets/img/products/product-img-2.jpg') }}" alt="Quả mọng">
+                    <div class="product-actions">
+                        <a class="action-btn" title="Yêu thích"><i class="far fa-heart"></i></a>
+                        <a class="action-btn" title="So sánh"><i class="fas fa-exchange-alt"></i></a>
+                        <a class="action-btn" title="Xem nhanh"><i class="far fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-category">Quả Mọng</div>
+                    <h3 class="product-title">Quả Mọng Hỗn Hợp</h3>
+                    <div class="product-price">
+                        <span class="current-price">85.000đ</span>
+                    </div>
+                    <button class="add-to-cart">
+                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 3 -->
+            <div class="product-card" data-category="citrus">
+                <span class="product-badge badge-sale">Giảm 15%</span>
+                <div class="product-thumb">
+                    <img src="{{ url_for('static', filename='assets/img/products/product-img-3.jpg') }}" alt="Chanh vàng">
+                    <div class="product-actions">
+                        <a class="action-btn" title="Yêu thích"><i class="far fa-heart"></i></a>
+                        <a class="action-btn" title="So sánh"><i class="fas fa-exchange-alt"></i></a>
+                        <a class="action-btn" title="Xem nhanh"><i class="far fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-category">Họ Cam Quýt</div>
+                    <h3 class="product-title">Chanh Vàng Nhập Khẩu</h3>
+                    <div class="product-price">
+                        <span class="current-price">59.500đ</span>
+                        <span class="old-price">70.000đ</span>
+                    </div>
+                    <button class="add-to-cart">
+                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 4 -->
+            <div class="product-card" data-category="tropical">
+                <div class="product-thumb">
+                    <img src="{{ url_for('static', filename='assets/img/products/product-img-4.jpg') }}" alt="Xoài">
+                    <div class="product-actions">
+                        <a class="action-btn" title="Yêu thích"><i class="far fa-heart"></i></a>
+                        <a class="action-btn" title="So sánh"><i class="fas fa-exchange-alt"></i></a>
+                        <a class="action-btn" title="Xem nhanh"><i class="far fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-category">Trái Cây Nhiệt Đới</div>
+                    <h3 class="product-title">Xoài Cát Chu Đặc Biệt</h3>
+                    <div class="product-price">
+                        <span class="current-price">65.000đ</span>
+                    </div>
+                    <button class="add-to-cart">
+                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 5 -->
+            <div class="product-card" data-category="citrus organic">
+                <span class="product-badge badge-organic">Hữu Cơ</span>
+                <div class="product-thumb">
+                    <img src="{{ url_for('static', filename='assets/img/products/product-img-5.jpg') }}" alt="Cam">
+                    <div class="product-actions">
+                        <a class="action-btn" title="Yêu thích"><i class="far fa-heart"></i></a>
+                        <a class="action-btn" title="So sánh"><i class="fas fa-exchange-alt"></i></a>
+                        <a class="action-btn" title="Xem nhanh"><i class="far fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-category">Họ Cam Quýt</div>
+                    <h3 class="product-title">Cam Xoàn Hữu Cơ</h3>
+                    <div class="product-price">
+                        <span class="current-price">75.000đ</span>
+                    </div>
+                    <button class="add-to-cart">
+                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product 6 -->
+            <div class="product-card" data-category="tropical">
+                <div class="product-thumb">
+                    <img src="{{ url_for('static', filename='assets/img/products/product-img-6.jpg') }}" alt="Dứa">
+                    <div class="product-actions">
+                        <a class="action-btn" title="Yêu thích"><i class="far fa-heart"></i></a>
+                        <a class="action-btn" title="So sánh"><i class="fas fa-exchange-alt"></i></a>
+                        <a class="action-btn" title="Xem nhanh"><i class="far fa-eye"></i></a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-category">Trái Cây Nhiệt Đới</div>
+                    <h3 class="product-title">Dứa Tây Ninh</h3>
+                    <div class="product-price">
+                        <span class="current-price">45.000đ</span>
+                        <span class="old-price">55.000đ</span>
+                    </div>
+                    <button class="add-to-cart">
+                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="see-more-wrap fade-in">
+            <a href="#" class="btn btn-primary btn-large">
+                <i class="fas fa-plus"></i> Xem Thêm Sản Phẩm
+            </a>
+        </div>
+    </div>
+</section>
+<!-- End Featured Products Section -->
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

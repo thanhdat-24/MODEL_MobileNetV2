@@ -240,10 +240,6 @@ def history():
     try:
         supabase = get_supabase_client()
         
-        # DEBUG: In ra user_id hiện tại
-        app.logger.debug(f"Current user_id in session: {session['user_id']}")
-        app.logger.debug(f"Type of user_id: {type(session['user_id'])}")
-        
         # Lấy thông tin user
         user_response = supabase.table('taikhoan').select('taikhoan, Avarta').eq('id', session["user_id"]).execute()
         
@@ -252,20 +248,28 @@ def history():
         
         user = user_response.data[0]
         
-        # DEBUG: Kiểm tra việc truy vấn lịch sử
-        app.logger.debug(f"Querying history for user_id: {session['user_id']}")
+        # Lấy tổng số bản ghi để phân trang
+        count_response = supabase.table('lichsunhandien').select('id', count='exact')\
+            .eq('user_id', int(session["user_id"]))\
+            .execute()
         
-        # Lấy lịch sử nhận diện của user
+        total_records = count_response.count if hasattr(count_response, 'count') else 0
+        
+        # Thông tin phân trang
+        page = request.args.get('page', 1, type=int)
+        per_page = 10  # Số lượng bản ghi trên mỗi trang
+        total_pages = (total_records + per_page - 1) // per_page  # Làm tròn lên
+        
+        # Tính từ offset
+        offset = (page - 1) * per_page
+        
+        # Lấy lịch sử nhận diện của user có phân trang
         history_response = supabase.table('lichsunhandien')\
             .select('*')\
             .eq('user_id', int(session["user_id"]))\
             .order('thoi_gian', desc=True)\
-            .limit(50)\
+            .range(offset, offset + per_page - 1)\
             .execute()
-        
-        # DEBUG: Kiểm tra kết quả truy vấn
-        app.logger.debug(f"History query response: {history_response.data}")
-        app.logger.debug(f"Number of history items: {len(history_response.data) if history_response.data else 0}")
         
         history_data = history_response.data if history_response.data else []
         
@@ -280,7 +284,6 @@ def history():
                     item['thoi_gian'] = vietnam_time.strftime('%Y-%m-%d %H:%M:%S')
         
             except json.JSONDecodeError:
-                app.logger.error(f"Lỗi parse JSON cho item {item['id']}")
                 item['ket_qua'] = []
             except Exception as e:
                 app.logger.error(f"Lỗi xử lý thời gian cho item {item['id']}: {str(e)}")
@@ -288,7 +291,10 @@ def history():
         return render_template("history.html", 
                              username=user['taikhoan'], 
                              avatar_url=user['Avarta'],
-                             history=history_data)
+                             history=history_data,
+                             page=page,
+                             total_pages=total_pages,
+                             total_records=total_records)
                              
     except Exception as e:
         app.logger.error(f"Lỗi khi lấy lịch sử: {e}")

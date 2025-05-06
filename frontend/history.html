@@ -400,6 +400,76 @@
     }
 }
 
+/* Pagination Styles */
+.pagination-container {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #051922;
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.pagination-btn:hover {
+    background-color: #F28123;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(242, 129, 35, 0.3);
+}
+
+.pagination-btn.active {
+    background-color: #F28123;
+    color: white;
+    box-shadow: 0 5px 15px rgba(242, 129, 35, 0.3);
+}
+
+.pagination-btn.disabled {
+    background-color: #f0f0f0;
+    color: #aaa;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.pagination-btn.disabled:hover {
+    background-color: #f0f0f0;
+    color: #aaa;
+    transform: none;
+    box-shadow: none;
+}
+
+.first-page, .last-page {
+    font-size: 12px;
+}
+
 /* Desktop styles */
 @media (min-width: 769px) {
     .history-section {
@@ -472,6 +542,16 @@
     .no-history-icon-circle i {
         font-size: 40px;
     }
+    
+    .pagination-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 13px;
+    }
+    
+    .pagination {
+        gap: 3px;
+    }
 }
 
 /* Fix cho container trang lịch sử */
@@ -520,6 +600,63 @@ body.history-page {
             </div>
             {% endfor %}
         </div>
+        
+        <!-- Pagination section -->
+        <div class="pagination-container fade-in">
+            {% if total_pages > 1 %}
+                <div class="pagination-info">
+                    Hiển thị {{ history|length }} trong tổng số {{ total_records }} kết quả
+                </div>
+                <div class="pagination">
+                    {% if page > 1 %}
+                        <a href="{{ url_for('history', page=1) }}" class="pagination-btn first-page" title="Trang đầu">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                        <a href="{{ url_for('history', page=page-1) }}" class="pagination-btn" title="Trang trước">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    {% else %}
+                        <span class="pagination-btn disabled" title="Trang đầu">
+                            <i class="fas fa-angle-double-left"></i>
+                        </span>
+                        <span class="pagination-btn disabled" title="Trang trước">
+                            <i class="fas fa-angle-left"></i>
+                        </span>
+                    {% endif %}
+
+                    {% set start_page = page - 2 if page - 2 > 0 else 1 %}
+                    {% set end_page = start_page + 4 if start_page + 4 <= total_pages else total_pages %}
+                    {% if end_page - start_page < 4 and start_page > 1 %}
+                        {% set start_page = end_page - 4 if end_page - 4 > 0 else 1 %}
+                    {% endif %}
+
+                    {% for p in range(start_page, end_page + 1) %}
+                        {% if p == page %}
+                            <span class="pagination-btn active">{{ p }}</span>
+                        {% else %}
+                            <a href="{{ url_for('history', page=p) }}" class="pagination-btn">{{ p }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page < total_pages %}
+                        <a href="{{ url_for('history', page=page+1) }}" class="pagination-btn" title="Trang sau">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                        <a href="{{ url_for('history', page=total_pages) }}" class="pagination-btn last-page" title="Trang cuối">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    {% else %}
+                        <span class="pagination-btn disabled" title="Trang sau">
+                            <i class="fas fa-angle-right"></i>
+                        </span>
+                        <span class="pagination-btn disabled" title="Trang cuối">
+                            <i class="fas fa-angle-double-right"></i>
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        
         {% else %}
         <div class="no-history">
             <div class="no-history-decorative"></div>

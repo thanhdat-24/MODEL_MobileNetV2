@@ -55,7 +55,7 @@
 					<div class="main-menu-wrap">
 						<!-- logo -->
 						<div class="site-logo">
-							<a href="{{ url_for('index') }}">
+							<a href="{{ url_for('main.index') }}">
 								<img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="">
 							</a>
 						</div>
@@ -64,7 +64,7 @@
 						<!-- menu start -->
 						<nav class="main-menu">
 							<ul>
-								<li class="current-list-item"><a href="{{ url_for('index') }}">Trang Chủ</a>
+								<li class="current-list-item"><a href="{{ url_for('main.index') }}">Trang Chủ</a>
 									
 								</li>
 								<li><a href="about.html">About</a></li>
@@ -75,21 +75,21 @@
 										<li><a href="cart.html">Cart</a></li>
 										<li><a href="checkout.html">Check Out</a></li>
 										<!-- Trong phần <nav class="main-menu"> -->
-										<li><a href="{{ url_for('news') }}">News</a></li>
-										<li><a href="{{ url_for('shop') }}">Shop</a></li>
+										<li><a href="{{ url_for('main.news') }}">Tin Tức</a></li>
+										<li><a href="{{ url_for('main.shop') }}">Shop</a></li>
 									</ul>
 								</li>
 								<!-- Trong phần menu của layout.html, thay đổi liên kết "Tin Tức" -->
-								<li><a href="{{ url_for('news') }}">Tin Tức</a>
+								<li><a href="<a href="{{ url_for('main.news') }}">Tin Tức</a>
     								<ul class="sub-menu">
-        							<li><a href="{{ url_for('news') }}">Tin Tức</a></li>
+        							<li><a href="<a href="{{ url_for('main.news') }}">Tin Tức</a></li>
         							<li><a href="single-news.html">Bài Viết Chi Tiết</a></li>
     								</ul>
 								</li>
 								<li><a href="contact.html">Contact</a></li>
-								<li><a href="{{ url_for('shop') }}">Shop</a>
+								<li><a href="{{ url_for('main.shop') }}">Shop</a>
 									<ul class="sub-menu">
-										<li><a href="{{ url_for('shop') }}">Shop</a></li>
+										<li><a href="{{ url_for('main.shop') }}">Shop</a></li>
 										<li><a href="checkout.html">Check Out</a></li>
 										<li><a href="single-product.html">Single Product</a></li>
 										<li><a href="cart.html">Cart</a></li>
@@ -107,8 +107,8 @@
 													</div>
 													<div class="dropdown-menu">
 														<a href="/profile"><i class="fas fa-user"></i> Tài khoản</a>
-														<a href="{{ url_for('history') }}"><i class="fas fa-history"></i> Lịch sử nhận diện</a>
-														<a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+														<a href="{{ url_for('history.history') }}"><i class="fas fa-history"></i> Lịch sử nhận diện</a>
+														<a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
 													</div>
 												</div>
 											{% else %}

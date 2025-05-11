@@ -621,7 +621,7 @@
     </div>
 
     <!-- Back to site link -->
-    <a href="{{ url_for('index') }}" class="back-to-site">
+    <a href="{{ url_for('main.index') }}" class="back-to-site">
         <i class="fas fa-arrow-left"></i> Quay lại trang chủ
     </a>
 
@@ -657,7 +657,7 @@
             </div>
             {% endif %}
 
-            <form method="POST" action="{{ url_for('login') }}">
+            <form method="POST" action="{{ url_for('auth.login') }}">
                 <div class="form-group">
                     <label for="username">Tên đăng nhập</label>
                     <div class="input-group">

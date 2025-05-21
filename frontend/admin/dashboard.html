@@ -1,0 +1,554 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Admin Dashboard - Fruitkha{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-dashboard {
+        padding: 40px 0;
+        background-color: #f8f9fa;
+    }
+    .stats-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+    .stat-card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        padding: 25px;
+        flex: 1;
+        min-width: 200px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-left: 4px solid #F28123;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+    .stat-card .number {
+        font-size: 38px;
+        font-weight: 700;
+        color: #F28123;
+        margin-bottom: 10px;
+    }
+    .stat-card .title {
+        font-size: 16px;
+        color: #555;
+        font-weight: 500;
+    }
+    .stat-card .icon {
+        float: right;
+        font-size: 48px;
+        opacity: 0.15;
+        color: #051922;
+    }
+    .admin-section {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    .admin-section h2 {
+        font-size: 24px;
+        margin-bottom: 25px;
+        color: #051922;
+        border-bottom: 2px solid #F28123;
+        padding-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+    .admin-section h2 i {
+        margin-right: 12px;
+        color: #F28123;
+        font-size: 22px;
+    }
+    table.admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    table.admin-table th, 
+    table.admin-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    table.admin-table th {
+        background-color: #f5f5f5;
+        font-weight: 600;
+        color: #333;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    table.admin-table tr:hover {
+        background-color: #f9f9f9;
+    }
+    .action-btn {
+        background-color: #F28123;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 5px;
+        transition: all 0.3s ease;
+    }
+    .action-btn.delete {
+        background-color: #e74c3c;
+    }
+    .action-btn.view {
+        background-color: #3498db;
+    }
+    .action-btn:hover {
+        opacity: 0.85;
+        transform: translateY(-2px);
+    }
+    .quick-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    .quick-action-btn {
+        background-color: #051922;
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .quick-action-btn i {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    .quick-action-btn:hover {
+        background-color: #F28123;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    .chart-container {
+        height: 350px;
+        margin-bottom: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    .date-filter {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 25px;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    .date-filter select {
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .date-filter label {
+        margin-right: 5px;
+        font-weight: 500;
+        color: #333;
+    }
+    .tabs-container {
+        display: flex;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+    .tab {
+        padding: 12px 25px;
+        background-color: #f5f5f5;
+        cursor: pointer;
+        border-radius: 8px 8px 0 0;
+        margin-right: 5px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .tab.active {
+        background-color: #F28123;
+        color: white;
+    }
+    .tab:hover:not(.active) {
+        background-color: #e9ecef;
+    }
+    .tab-content {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .tab-content.active {
+        display: block;
+        opacity: 1;
+    }
+    .search-box {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+    }
+    .search-box input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .search-box button {
+        background-color: #F28123;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .search-box button:hover {
+        background-color: #e06900;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    .pagination a {
+        color: #051922;
+        padding: 10px 18px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+        margin: 0 5px;
+        border-radius: 6px;
+    }
+    .pagination a.active {
+        background-color: #F28123;
+        color: white;
+        border: 1px solid #F28123;
+    }
+    .pagination a:hover:not(.active) {
+        background-color: #f5f5f5;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content_header %}
+<div class="breadcrumb-section breadcrumb-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="breadcrumb-text">
+                    <i class="fas fa-tachometer-alt dash-icon"></i>
+                    <p>Quản trị viên</p>
+                    <h1>Bảng Điều Khiển</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="container">
+        <div class="quick-actions">
+            <a href="{{ url_for('admin.cache_management') }}" class="quick-action-btn">
+                <i class="fas fa-sync"></i> Quản lý Cache
+            </a>
+            <a href="#" class="quick-action-btn">
+                <i class="fas fa-user-plus"></i> Thêm Người Dùng
+            </a>
+            <a href="{{ url_for('admin.settings') }}" class="quick-action-btn">
+                <i class="fas fa-cog"></i> Cài Đặt Hệ Thống
+            </a>
+            <a href="#" class="quick-action-btn">
+                <i class="fas fa-database"></i> Sao Lưu Dữ Liệu
+            </a>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-users"></i></div>
+                <div class="number">{{ total_users }}</div>
+                <div class="title">Tổng Người Dùng</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-image"></i></div>
+                <div class="number">{{ total_recognitions }}</div>
+                <div class="title">Lượt Nhận Diện</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-check-circle"></i></div>
+                <div class="number">{{ success_rate }}%</div>
+                <div class="title">Tỷ Lệ Thành Công</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-star"></i></div>
+                <div class="number">{{ avg_rating }}</div>
+                <div class="title">Đánh Giá Trung Bình</div>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2><i class="fas fa-chart-line"></i> Thống Kê</h2>
+            <div class="date-filter">
+                <label for="time-period">Thời gian:</label>
+                <select id="time-period">
+                    <option value="day">Hôm nay</option>
+                    <option value="week" selected>Tuần này</option>
+                    <option value="month">Tháng này</option>
+                    <option value="year">Năm nay</option>
+                </select>
+            </div>
+            <div class="chart-container">
+                <!-- Chart will be rendered here by JavaScript -->
+                <canvas id="recognitionChart"></canvas>
+            </div>
+        </div>
+
+        <div class="tabs-container">
+            <div class="tab active" data-tab="recent-users">Người Dùng Gần Đây</div>
+            <div class="tab" data-tab="recognition-history">Lịch Sử Nhận Diện</div>
+            <div class="tab" data-tab="system-logs">Nhật Ký Hệ Thống</div>
+        </div>
+
+        <div class="tab-content active" id="recent-users">
+            <div class="admin-section">
+                <h2><i class="fas fa-users"></i> Người Dùng Gần Đây</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="Tìm kiếm người dùng...">
+                    <button><i class="fas fa-search"></i> Tìm</button>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tài Khoản</th>
+                            <th>Ngày Đăng Ký</th>
+                            <th>Lượt Nhận Diện</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.taikhoan }}</td>
+                            <td>{{ user.ngay_dang_ky }}</td>
+                            <td>{{ user.luot_nhan_dien }}</td>
+                            <td>
+                                <button class="action-btn view"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <a href="#">&laquo;</a>
+                    <a href="#" class="active">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">4</a>
+                    <a href="#">&raquo;</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="recognition-history">
+            <div class="admin-section">
+                <h2><i class="fas fa-history"></i> Lịch Sử Nhận Diện</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="Tìm kiếm theo tên sản phẩm...">
+                    <button><i class="fas fa-search"></i> Tìm</button>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Người Dùng</th>
+                            <th>Sản Phẩm</th>
+                            <th>Độ Chính Xác</th>
+                            <th>Thời Gian</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in recognition_history %}
+                        <tr>
+                            <td>{{ record.id }}</td>
+                            <td>{{ record.user_name }}</td>
+                            <td>{{ record.ten_san_pham }}</td>
+                            <td>{{ record.do_chinh_xac }}%</td>
+                            <td>{{ record.thoi_gian }}</td>
+                            <td>
+                                <button class="action-btn view"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <a href="#">&laquo;</a>
+                    <a href="#" class="active">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">4</a>
+                    <a href="#">&raquo;</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="system-logs">
+            <div class="admin-section">
+                <h2><i class="fas fa-clipboard-list"></i> Nhật Ký Hệ Thống</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="Tìm kiếm nhật ký...">
+                    <button><i class="fas fa-search"></i> Tìm</button>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Thời Gian</th>
+                            <th>Loại</th>
+                            <th>Mô Tả</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in system_logs %}
+                        <tr>
+                            <td>{{ log.id }}</td>
+                            <td>{{ log.thoi_gian }}</td>
+                            <td>{{ log.loai }}</td>
+                            <td>{{ log.mo_ta }}</td>
+                            <td>
+                                <button class="action-btn view"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <a href="#">&laquo;</a>
+                    <a href="#" class="active">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#">4</a>
+                    <a href="#">&raquo;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Initially show only the first tab content
+        tabContents.forEach((content, index) => {
+            if (index === 0) {
+                content.classList.add('active');
+            } else {
+                content.classList.remove('active');
+            }
+        });
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to current tab
+                this.classList.add('active');
+                
+                // Fade out all tab contents first
+                tabContents.forEach(content => {
+                    content.style.opacity = 0;
+                    
+                    // After fade out, hide all but activate the selected one
+                    setTimeout(() => {
+                        content.classList.remove('active');
+                        
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                            // Fade in the selected content
+                            setTimeout(() => {
+                                content.style.opacity = 1;
+                            }, 50);
+                        }
+                    }, 300);
+                });
+            });
+        });
+        
+        // Sample chart data - replace with real data
+        const ctx = document.getElementById('recognitionChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                datasets: [{
+                    label: 'Nhận diện đơn ảnh',
+                    data: [12, 19, 3, 5, 2, 3, 9],
+                    borderColor: '#F28123',
+                    backgroundColor: 'rgba(242, 129, 35, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Nhận diện đa ảnh',
+                    data: [7, 11, 5, 8, 3, 7, 12],
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // Update chart when time period changes
+        document.getElementById('time-period').addEventListener('change', function() {
+            // Here you would fetch new data based on the selected time period
+            // For demo purposes, we'll just update with random data
+            chart.data.datasets.forEach(dataset => {
+                dataset.data = Array.from({length: 7}, () => Math.floor(Math.random() * 20) + 1);
+            });
+            chart.update();
+        });
+    });
+</script>
+{% endblock %} 

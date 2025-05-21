@@ -100,7 +100,9 @@
         });
         
         // isotop inner
-        $(".product-lists").isotope();
+        if ($.fn.isotope) {
+            $(".product-lists").isotope();
+        }
 
         // magnific popup
         $('.popup-youtube').magnificPopup({
@@ -138,15 +140,19 @@
        
 
         // stikcy js
-        $("#sticker").sticky({
-            topSpacing: 0
-        });
+        if ($.fn.sticky) {
+            $("#sticker").sticky({
+                topSpacing: 0
+            });
+        }
 
         //mean menu
-        $('.main-menu').meanmenu({
-            meanMenuContainer: '.mobile-menu',
-            meanScreenWidth: "992"
-        });
+        if ($.fn.meanmenu) {
+            $('.main-menu').meanmenu({
+                meanMenuContainer: '.mobile-menu',
+                meanScreenWidth: "992"
+            });
+        }
         
          // search form
         $(".search-bar-icon").on("click", function(){

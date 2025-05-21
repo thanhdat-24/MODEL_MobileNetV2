@@ -2,7 +2,8 @@ create table taikhoan (
   id int8 primary key generated always as identity,
   taikhoan text,
 	matkhau text,
-	Avarta text
+	Avarta text,
+  is_admin boolean default false
 );
 -- Chạy query này trong Supabase SQL Editor để tạo bảng lịch sử
 create table lichsunhandien (

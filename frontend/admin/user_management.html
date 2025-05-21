@@ -1,0 +1,407 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Quản Lý Người Dùng - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .user-management {
+        padding: 80px 0;
+    }
+    .admin-section {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+    .admin-section h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+        color: #051922;
+        border-bottom: 2px solid #F28123;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+    .admin-section h2 i {
+        margin-right: 10px;
+        color: #F28123;
+    }
+    .search-box {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 10px;
+    }
+    .search-box input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    .search-box button {
+        background-color: #F28123;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .user-table th, 
+    .user-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    .user-table th {
+        background-color: #f5f5f5;
+        font-weight: 600;
+        color: #333;
+    }
+    .user-table tr:hover {
+        background-color: #f9f9f9;
+    }
+    .action-btn {
+        background-color: #F28123;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 5px;
+    }
+    .action-btn.delete {
+        background-color: #e74c3c;
+    }
+    .action-btn.view {
+        background-color: #3498db;
+    }
+    .action-btn:hover {
+        opacity: 0.9;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .pagination a {
+        color: #051922;
+        padding: 8px 16px;
+        text-decoration: none;
+        transition: background-color .3s;
+        border: 1px solid #ddd;
+        margin: 0 4px;
+    }
+    .pagination a.active {
+        background-color: #F28123;
+        color: white;
+        border: 1px solid #F28123;
+    }
+    .pagination a:hover:not(.active) {
+        background-color: #ddd;
+    }
+    .back-to-dashboard {
+        margin-bottom: 20px;
+        display: inline-block;
+        color: #051922;
+        font-weight: 600;
+    }
+    .back-to-dashboard i {
+        margin-right: 5px;
+    }
+    .back-to-dashboard:hover {
+        color: #F28123;
+    }
+    .flash-message {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .flash-message.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .flash-message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .add-user-btn {
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        float: right;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    .add-user-btn i {
+        margin-right: 8px;
+    }
+    .add-user-btn:hover {
+        background-color: #2ecc71;
+    }
+    .user-status {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .user-status.active {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .user-status.inactive {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .user-status.admin {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+    .user-filter {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .user-filter select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .user-filter {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .add-user-btn {
+            float: none;
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .search-box {
+            flex-direction: column;
+        }
+        
+        .search-box button {
+            width: 100%;
+        }
+        
+        .pagination a {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .user-management {
+            padding: 60px 0 40px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content_header %}
+<div class="breadcrumb-section breadcrumb-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="breadcrumb-text">
+                    <i class="fas fa-users dash-icon"></i>
+                    <p>Quản trị viên</p>
+                    <h1>Quản Lý Người Dùng</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="user-management">
+    <div class="container">
+        <a href="{{ url_for('admin.dashboard') }}" class="back-to-dashboard">
+            <i class="fas fa-arrow-left"></i> Quay lại Dashboard
+        </a>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="admin-section">
+            <h2><i class="fas fa-users"></i> Người Dùng ({{ total_users }})</h2>
+            
+            <a href="#" class="add-user-btn">
+                <i class="fas fa-user-plus"></i> Thêm Người Dùng
+            </a>
+            
+            <div class="user-filter">
+                <select id="roleFilter">
+                    <option value="all">Tất cả vai trò</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">Người dùng</option>
+                </select>
+                
+                <select id="statusFilter">
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Không hoạt động</option>
+                </select>
+            </div>
+            
+            <form method="GET" action="{{ url_for('admin.user_management') }}" class="search-box">
+                <input type="text" name="search" placeholder="Tìm kiếm theo tên tài khoản..." value="{{ search_query }}">
+                <button type="submit"><i class="fas fa-search"></i> Tìm</button>
+            </form>
+            
+            {% if users %}
+                <div class="table-responsive">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ảnh</th>
+                            <th>Tài Khoản</th>
+                            <th>Vai Trò</th>
+                            <th>Trạng Thái</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                <img src="{{ user.Avarta if user.Avarta else 'https://www.gravatar.com/avatar/?d=mp' }}" alt="User Avatar" class="user-avatar">
+                            </td>
+                            <td>{{ user.taikhoan }}</td>
+                            <td>
+                                {% if user.is_admin %}
+                                <span class="user-status admin">Admin</span>
+                                {% else %}
+                                <span class="user-status">Người dùng</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="user-status active">Hoạt động</span>
+                            </td>
+                            <td>
+                                    <div class="action-buttons">
+                                <button class="action-btn view"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete"><i class="fas fa-trash"></i></button>
+                                
+                                {% if not user.is_admin %}
+                                <button class="action-btn" title="Chỉ định làm admin"><i class="fas fa-user-shield"></i></button>
+                                {% endif %}
+                                    </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                
+                {% if total_pages > 1 %}
+                <div class="pagination">
+                    {% if page > 1 %}
+                    <a href="{{ url_for('admin.user_management', page=1, search=search_query) }}">&laquo;</a>
+                    <a href="{{ url_for('admin.user_management', page=page-1, search=search_query) }}">&lsaquo;</a>
+                    {% endif %}
+                    
+                    {% for p in range(max(1, page-2), min(total_pages+1, page+3)) %}
+                    <a href="{{ url_for('admin.user_management', page=p, search=search_query) }}" {% if p == page %}class="active"{% endif %}>{{ p }}</a>
+                    {% endfor %}
+                    
+                    {% if page < total_pages %}
+                    <a href="{{ url_for('admin.user_management', page=page+1, search=search_query) }}">&rsaquo;</a>
+                    <a href="{{ url_for('admin.user_management', page=total_pages, search=search_query) }}">&raquo;</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="no-results">
+                    <p>Không tìm thấy người dùng nào.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Role filter functionality
+        document.getElementById('roleFilter').addEventListener('change', function() {
+            filterUsers();
+        });
+        
+        // Status filter functionality
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            filterUsers();
+        });
+        
+        function filterUsers() {
+            const roleFilter = document.getElementById('roleFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('.user-table tbody tr');
+            
+            rows.forEach(row => {
+                let showRow = true;
+                
+                // Filter by role
+                if (roleFilter !== 'all') {
+                    const roleCell = row.querySelector('td:nth-child(4) span');
+                    const isAdmin = roleCell.classList.contains('admin');
+                    
+                    if (roleFilter === 'admin' && !isAdmin) {
+                        showRow = false;
+                    } else if (roleFilter === 'user' && isAdmin) {
+                        showRow = false;
+                    }
+                }
+                
+                // Filter by status
+                if (statusFilter !== 'all' && showRow) {
+                    const statusCell = row.querySelector('td:nth-child(5) span');
+                    const isActive = statusCell.classList.contains('active');
+                    
+                    if (statusFilter === 'active' && !isActive) {
+                        showRow = false;
+                    } else if (statusFilter === 'inactive' && isActive) {
+                        showRow = false;
+                    }
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+    });
+</script>
+{% endblock %} 

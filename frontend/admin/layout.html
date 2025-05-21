@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="Admin Dashboard Nhận Diện Hoa Quả">
+    
+    <!-- favicon -->
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
+    <!-- google font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/all.min.css') }}">
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    <!-- main css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}">
+    <!-- dashboard css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+    <!-- magnific popup css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/magnific-popup.css') }}">
+    
+    <title>{% block title %}Admin Dashboard - Hệ Thống Nhận Diện Hoa Quả{% endblock %}</title>
+    
+    <style>
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+            position: relative;
+        }
+        
+        .top-header-area {
+            background-color: #051922;
+            position: relative;
+            z-index: 99;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-menu-wrap {
+            padding: 15px 0;
+        }
+        
+        .site-logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        /* Position the dashboard elements properly */
+        .dashboard-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        .dashboard-sidebar {
+            z-index: 100;
+        }
+
+        .breadcrumb-section {
+            position: relative;
+            z-index: 5;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-content {
+                width: 100%;
+                overflow-x: hidden;
+                padding-right: 0;
+                padding-left: 0;
+            }
+            
+            .dashboard-content .container {
+                padding-right: 15px;
+                padding-left: 15px;
+                width: 100%;
+            }
+            
+            .site-logo img {
+                max-width: 120px;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div class="loader">
+        <div class="loader-inner">
+            <div class="circle"></div>
+        </div>
+    </div>
+    <!-- End Preloader -->
+    
+    <!-- Header -->
+    <div class="top-header-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="main-menu-wrap d-flex justify-content-between align-items-center">
+                        <!-- Logo -->
+                        <div class="site-logo">
+                            <a href="{{ url_for('main.index') }}">
+                                <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Logo">
+                            </a>
+                        </div>
+                        
+                        <!-- User Profile -->
+                        <div class="header-icons">
+                                <div class="user-dropdown">
+                                    <div class="user-info">
+                                        {% if avatar_url %}
+                                        <img src="{{ avatar_url }}" alt="Avatar" class="user-avatar">
+                                        {% else %}
+                                        <img src="{{ url_for('static', filename='assets/img/avatar-default.jpg') }}" alt="Avatar" class="user-avatar">
+                                        {% endif %}
+                                    <span class="username">{{ username }}</span>
+                                    <i class="fas fa-angle-down"></i>
+                                    </div>
+                                    <div class="dropdown-menu">
+                                        <a href="{{ url_for('main.index') }}"><i class="fas fa-home"></i>Trang chủ</a>
+                                        <a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i>Đăng xuất</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Header -->
+
+    <!-- Dashboard Wrapper -->
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        <div class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <h3>Admin Panel</h3>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="{{ url_for('admin.dashboard') }}" {% if request.endpoint == 'admin.dashboard' %}class="active"{% endif %}>
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.user_management') }}" {% if request.endpoint == 'admin.user_management' %}class="active"{% endif %}>
+                        <i class="fas fa-users"></i>
+                        Quản lý người dùng
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.recognition_history') }}" {% if request.endpoint == 'admin.recognition_history' %}class="active"{% endif %}>
+                        <i class="fas fa-images"></i>
+                        Lịch sử nhận diện
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.cache_management') }}" {% if request.endpoint == 'admin.cache_management' %}class="active"{% endif %}>
+                        <i class="fas fa-database"></i>
+                        Quản lý cache
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.settings') }}" {% if request.endpoint == 'admin.settings' %}class="active"{% endif %}>
+                        <i class="fas fa-cog"></i>
+                        Cài đặt hệ thống
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>© 2023 Hệ thống nhận diện hoa quả</p>
+            </div>
+        </div>
+        <!-- End Sidebar -->
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            {% block content_header %}{% endblock %}
+            {% block content %}{% endblock %}
+            
+            <!-- Footer -->
+            <div class="dashboard-footer">
+                <p>© 2023 Hệ thống Nhận diện Hoa quả. Bản quyền thuộc về Fruit360.</p>
+            </div>
+        </div>
+        <!-- End Main Content -->
+    </div>
+    <!-- End Dashboard Wrapper -->
+
+    <!-- Toggle Button for Sidebar on Mobile -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- jquery -->
+    <script src="{{ url_for('static', filename='assets/js/jquery-1.11.3.min.js') }}"></script>
+    <!-- bootstrap -->
+    <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
+    <!-- waypoints -->
+    <script src="{{ url_for('static', filename='assets/js/waypoints.js') }}"></script>
+    <!-- sticker js -->
+    <script src="{{ url_for('static', filename='assets/js/sticker.js') }}"></script>
+    <script>
+        // Disable sticker for admin panel to prevent overlap issues
+        // $(document).ready(function() {
+        //    $("#sticker").sticky({topSpacing:0});
+        // });
+    </script>
+    <!-- isotope -->
+    <script src="{{ url_for('static', filename='assets/js/jquery.isotope-3.0.6.min.js') }}"></script>
+    <!-- magnific popup -->
+    <script src="{{ url_for('static', filename='assets/js/jquery.magnific-popup.min.js') }}"></script>
+    <!-- owl carousel -->
+    <script src="{{ url_for('static', filename='assets/js/owl.carousel.min.js') }}"></script>
+    <!-- main js -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+    
+    <!-- Sidebar toggle script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const dashboardWrapper = document.querySelector('.dashboard-wrapper');
+            const userDropdown = document.querySelector('.user-dropdown');
+            
+            // Toggle sidebar on mobile
+            sidebarToggle.addEventListener('click', function() {
+                dashboardWrapper.classList.toggle('sidebar-show');
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 992 && 
+                    !event.target.closest('.dashboard-sidebar') && 
+                    !event.target.closest('#sidebarToggle') &&
+                    dashboardWrapper.classList.contains('sidebar-show')) {
+                    dashboardWrapper.classList.remove('sidebar-show');
+                }
+            });
+            
+            // Toggle user dropdown
+            if (userDropdown) {
+                const userInfo = userDropdown.querySelector('.user-info');
+                const dropdownMenu = userDropdown.querySelector('.dropdown-menu');
+                
+                userInfo.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function() {
+                    if (dropdownMenu) {
+                        dropdownMenu.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 992) {
+                    dashboardWrapper.classList.remove('sidebar-show');
+                }
+            });
+            
+            // Ensure correct positioning of sidebar footer
+            function adjustSidebarFooter() {
+                const sidebar = document.querySelector('.dashboard-sidebar');
+                const sidebarFooter = document.querySelector('.sidebar-footer');
+                
+                if (sidebar && sidebarFooter) {
+                    // Ensure footer is at the bottom
+                    const sidebarHeight = sidebar.offsetHeight;
+                    const viewportHeight = window.innerHeight;
+                    
+                    if (sidebarHeight < viewportHeight) {
+                        sidebarFooter.style.marginTop = 'auto';
+                    } else {
+                        sidebarFooter.style.marginTop = '20px';
+                    }
+                }
+            }
+            
+            // Call on load and resize
+            adjustSidebarFooter();
+            window.addEventListener('resize', adjustSidebarFooter);
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+    <script>
+        $(document).ready(function() {
+            $(".model-card").click(function() {
+                $(".model-card").removeClass("active");
+                $(this).addClass("active");
+                // Cập nhật giá trị input hidden
+                $("#selected_model").val($(this).data("model-path"));
+            });
+        });
+    </script>
+</body>
+</html> 

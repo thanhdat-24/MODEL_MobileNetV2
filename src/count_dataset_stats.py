@@ -3,7 +3,7 @@ from PIL import Image
 from collections import Counter
 
 # Đường dẫn dataset
-DATASET_PATH = os.path.abspath("dataset_vietnamese")
+DATASET_PATH = os.path.abspath("dataset_vietnamese(128x128)")
 TRAIN_DIR = os.path.join(DATASET_PATH, "Training")
 TEST_DIR = os.path.join(DATASET_PATH, "Test")
 

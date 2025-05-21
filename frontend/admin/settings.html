@@ -1,0 +1,401 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Admin - Cài đặt hệ thống{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-section {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+    
+    .settings-section h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+        color: #051922;
+        border-bottom: 2px solid #F28123;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .settings-section h2 i {
+        margin-right: 10px;
+        color: #F28123;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 15px;
+    }
+    
+    .form-control:focus {
+        border-color: #F28123;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(242, 129, 35, 0.1);
+    }
+    
+    .settings-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+    
+    .btn-save {
+        background-color: #F28123;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-save:hover {
+        background-color: #e06900;
+    }
+    
+    .btn-reset {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-right: 10px;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-reset:hover {
+        background-color: #5a6268;
+    }
+    
+    .model-card {
+        background-color: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .model-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .model-card.active {
+        border: 2px solid #F28123;
+        background-color: #fff8f2;
+    }
+    
+    .model-card.active::before {
+        content: '\f058';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background-color: #F28123;
+        color: white;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+    
+    .model-name {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .model-meta {
+        color: #666;
+        font-size: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .model-meta span {
+        display: flex;
+        align-items: center;
+    }
+    
+    .model-meta i {
+        margin-right: 5px;
+        color: #F28123;
+    }
+    
+    .model-desc {
+        margin-top: 10px;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-gap: 20px;
+    }
+    
+    .info-badge {
+        background-color: #f8f9fa;
+        border-left: 3px solid #F28123;
+        padding: 15px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #666;
+        position: relative;
+    }
+    
+    .info-badge i {
+        color: #F28123;
+        font-size: 18px;
+        position: absolute;
+        top: 15px;
+        left: 15px;
+    }
+    
+    .info-badge p {
+        margin-left: 30px;
+        margin-bottom: 0;
+    }
+    
+    .info-badge.warning {
+        border-left-color: #ffc107;
+    }
+    
+    .info-badge.warning i {
+        color: #ffc107;
+    }
+    
+    .image-size-presets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .image-size-preset {
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 5px 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .image-size-preset:hover {
+        background-color: #e9ecef;
+    }
+    
+    .image-size-preset.active {
+        background-color: #F28123;
+        color: white;
+        border-color: #F28123;
+    }
+</style>
+{% endblock %}
+
+{% block content_header %}
+<div class="breadcrumb-section breadcrumb-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="breadcrumb-text">
+                    <i class="fas fa-cog dash-icon"></i>
+                    <p>Quản trị viên</p>
+                    <h1>Cài Đặt Hệ Thống</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="info-badge">
+        <i class="fas fa-info-circle"></i>
+        <p>Trang này cho phép bạn cấu hình mô hình nhận diện và các tham số hệ thống khác. Thay đổi sẽ ảnh hưởng đến cách hệ thống hoạt động, vui lòng cẩn thận khi thực hiện những thay đổi này.</p>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form action="{{ url_for('admin.save_settings') }}" method="POST">
+        <div class="settings-section">
+            <h2><i class="fas fa-brain"></i> Cài Đặt Mô Hình</h2>
+            
+            <div class="form-group">
+                <label>Chọn mô hình nhận diện:</label>
+                <div class="card-grid">
+                    {% for model in available_models %}
+                    <div class="model-card {% if model.path == current_model %}active{% endif %}" data-model-path="{{ model.path }}">
+                        <input type="radio" name="model_path" value="{{ model.path }}" style="display: none;" {% if model.path == current_model %}checked{% endif %}>
+                        <div class="model-name">{{ model.name }}</div>
+                        <div class="model-meta">
+                            <span><i class="fas fa-calendar-alt"></i> {{ model.created_at }}</span>
+                            <span><i class="fas fa-weight"></i> {{ model.size }}</span>
+                            <span><i class="fas fa-expand"></i> {{ model.img_size }}</span>
+                        </div>
+                        <div class="model-desc">{{ model.description }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="img_size">Kích thước ảnh:</label>
+                <div class="input-group" style="display: flex; gap: 10px;">
+                    <input type="number" name="img_width" id="img_width" class="form-control" value="{{ img_size[0] }}" min="32" max="512" required>
+                    <span style="line-height: 40px;">x</span>
+                    <input type="number" name="img_height" id="img_height" class="form-control" value="{{ img_size[1] }}" min="32" max="512" required>
+                </div>
+                <div class="image-size-presets">
+                    <div class="image-size-preset" data-width="128" data-height="128">128x128</div>
+                    <div class="image-size-preset" data-width="224" data-height="224">224x224</div>
+                    <div class="image-size-preset" data-width="299" data-height="299">299x299</div>
+                    <div class="image-size-preset" data-width="100" data-height="100">100x100</div>
+                </div>
+                <small class="form-text" style="display: block; margin-top: 5px; color: #666;">Đây là kích thước ảnh đầu vào cho mô hình. Đảm bảo phù hợp với kích thước mô hình được huấn luyện.</small>
+            </div>
+
+            <div class="info-badge warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Lưu ý: Kích thước ảnh phải phù hợp với mô hình đã chọn. Nếu sử dụng kích thước khác, hệ thống sẽ tự động resize ảnh nhưng có thể ảnh hưởng đến độ chính xác.</p>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h2><i class="fas fa-cogs"></i> Cài Đặt Hệ Thống</h2>
+            
+            <div class="form-group">
+                <label for="confidence_threshold">Ngưỡng độ tin cậy (%):</label>
+                <input type="number" name="confidence_threshold" id="confidence_threshold" class="form-control" value="{{ confidence_threshold * 100 }}" min="1" max="99" required>
+                <small class="form-text" style="display: block; margin-top: 5px; color: #666;">Ngưỡng độ tin cậy tối thiểu để hiển thị kết quả. Giá trị từ 1-99.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="max_predictions">Số lượng kết quả tối đa:</label>
+                <input type="number" name="max_predictions" id="max_predictions" class="form-control" value="{{ max_predictions }}" min="1" max="10" required>
+                <small class="form-text" style="display: block; margin-top: 5px; color: #666;">Số lượng kết quả dự đoán tối đa sẽ hiển thị cho người dùng.</small>
+            </div>
+            
+            <div class="form-group">
+                <div style="display: flex; align-items: center;">
+                    <input type="checkbox" name="enable_image_check" id="enable_image_check" style="margin-right: 10px;" {% if enable_image_check %}checked{% endif %}>
+                    <label for="enable_image_check" style="margin-bottom: 0;">Bật kiểm tra ảnh bằng AI</label>
+                </div>
+                <small class="form-text" style="display: block; margin-top: 5px; color: #666;">Khi bật, hệ thống sẽ sử dụng OpenAI để kiểm tra xem ảnh có chứa hoa quả hay không trước khi nhận diện.</small>
+            </div>
+        </div>
+        
+        <div class="settings-footer">
+            <button type="reset" class="btn-reset">Đặt lại</button>
+            <button type="submit" class="btn-save">Lưu cài đặt</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Make entire model card clickable
+        const modelCards = document.querySelectorAll('.model-card');
+        modelCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove active class from all cards
+                modelCards.forEach(c => c.classList.remove('active'));
+                // Add active class to clicked card
+                this.classList.add('active');
+                // Check the hidden radio button
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                // Set image size based on model info
+                const imgSize = this.querySelector('.model-meta span:nth-child(3)').textContent.trim();
+                const sizeMatch = imgSize.match(/(\d+)x(\d+)/);
+                if (sizeMatch) {
+                    document.getElementById('img_width').value = sizeMatch[1];
+                    document.getElementById('img_height').value = sizeMatch[2];
+                }
+            });
+        });
+        
+        // Image size presets
+        const sizePresets = document.querySelectorAll('.image-size-preset');
+        const imgWidthInput = document.getElementById('img_width');
+        const imgHeightInput = document.getElementById('img_height');
+        
+        // Set active class on the matching preset if it exists
+        function updateActivePreset() {
+            const width = imgWidthInput.value;
+            const height = imgHeightInput.value;
+            
+            sizePresets.forEach(preset => {
+                preset.classList.remove('active');
+                if (preset.dataset.width === width && preset.dataset.height === height) {
+                    preset.classList.add('active');
+                }
+            });
+        }
+        
+        // Initial update
+        updateActivePreset();
+        
+        sizePresets.forEach(preset => {
+            preset.addEventListener('click', function() {
+                const width = this.dataset.width;
+                const height = this.dataset.height;
+                
+                imgWidthInput.value = width;
+                imgHeightInput.value = height;
+                
+                // Update active class
+                sizePresets.forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Update active preset when inputs change
+        imgWidthInput.addEventListener('change', updateActivePreset);
+        imgHeightInput.addEventListener('change', updateActivePreset);
+    });
+</script>
+{% endblock %} 

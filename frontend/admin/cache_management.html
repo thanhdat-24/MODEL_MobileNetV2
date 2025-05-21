@@ -1,0 +1,244 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Quản Lý Cache - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cache-management {
+        padding: 80px 0;
+    }
+    .admin-section {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+    .admin-section h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+        color: #051922;
+        border-bottom: 2px solid #F28123;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+    .admin-section h2 i {
+        margin-right: 10px;
+        color: #F28123;
+    }
+    .cache-info {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .cache-info p {
+        margin-bottom: 10px;
+    }
+    .cache-info strong {
+        color: #F28123;
+    }
+    .cache-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    .cache-action-btn {
+        background-color: #051922;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s;
+    }
+    .cache-action-btn i {
+        margin-right: 8px;
+    }
+    .cache-action-btn:hover {
+        background-color: #F28123;
+    }
+    .cache-action-btn.danger {
+        background-color: #e74c3c;
+    }
+    .cache-action-btn.danger:hover {
+        background-color: #c0392b;
+    }
+    .cache-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .cache-table th, 
+    .cache-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    .cache-table th {
+        background-color: #f5f5f5;
+        font-weight: 600;
+        color: #333;
+    }
+    .cache-table tr:hover {
+        background-color: #f9f9f9;
+    }
+    .back-to-dashboard {
+        margin-bottom: 20px;
+        display: inline-block;
+        color: #051922;
+        font-weight: 600;
+    }
+    .back-to-dashboard i {
+        margin-right: 5px;
+    }
+    .back-to-dashboard:hover {
+        color: #F28123;
+    }
+    .flash-message {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .flash-message.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .flash-message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+{% endblock %}
+
+{% block content_header %}
+<div class="breadcrumb-section breadcrumb-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div class="breadcrumb-text">
+                    <i class="fas fa-database dash-icon"></i>
+                    <p>Quản trị viên</p>
+                    <h1>Quản Lý Cache</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="cache-management">
+    <div class="container">
+        <a href="{{ url_for('admin.dashboard') }}" class="back-to-dashboard">
+            <i class="fas fa-arrow-left"></i> Quay lại Dashboard
+        </a>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="admin-section">
+            <h2><i class="fas fa-info-circle"></i> Thông Tin Cache</h2>
+            <div class="cache-info">
+                <p><strong>Tổng dung lượng cache:</strong> 25.4 MB</p>
+                <p><strong>Số lượng công thức đã cache:</strong> {{ cached_recipes|length }}</p>
+                <p><strong>Thời gian cache gần nhất:</strong> {{ cached_recipes[0].su_dung_gan_nhat if cached_recipes else 'N/A' }}</p>
+                <p>Cache giúp tăng tốc độ phản hồi của hệ thống bằng cách lưu trữ dữ liệu tạm thời, giảm tải cho API và database.</p>
+            </div>
+            
+            <h2><i class="fas fa-cogs"></i> Hành Động</h2>
+            <form method="POST" action="{{ url_for('admin.clear_cache') }}">
+                <div class="cache-actions">
+                    <button type="submit" name="cache_type" value="all" class="cache-action-btn danger">
+                        <i class="fas fa-trash"></i> Xóa Tất Cả Cache
+                    </button>
+                    <button type="submit" name="cache_type" value="old" class="cache-action-btn">
+                        <i class="fas fa-broom"></i> Xóa Cache Cũ (>30 ngày)
+                    </button>
+                    <button type="submit" name="cache_type" value="recipe" class="cache-action-btn">
+                        <i class="fas fa-utensils"></i> Xóa Cache Công Thức
+                    </button>
+                    <button type="submit" name="cache_type" value="recognition" class="cache-action-btn">
+                        <i class="fas fa-image"></i> Xóa Cache Nhận Diện
+                    </button>
+                </div>
+            </form>
+        </div>
+            
+        <div class="admin-section">
+            <h2><i class="fas fa-utensils"></i> Công Thức Đã Cache</h2>
+            {% if cached_recipes %}
+                <table class="cache-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Loại Hoa Quả</th>
+                            <th>Kích Thước</th>
+                            <th>Sử Dụng Gần Nhất</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recipe in cached_recipes %}
+                        <tr>
+                            <td>{{ recipe.id }}</td>
+                            <td>{{ recipe.loai_hoa_qua }}</td>
+                            <td>{{ (recipe.cach_lam|length + recipe.nguyen_lieu|length) // 1024 }} KB</td>
+                            <td>{{ recipe.su_dung_gan_nhat }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin.clear_cache') }}" style="display: inline;">
+                                    <input type="hidden" name="cache_type" value="recipe_item">
+                                    <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+                                    <button type="submit" class="cache-action-btn danger" style="padding: 5px 10px;">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Không có công thức nào được cache.</p>
+            {% endif %}
+        </div>
+            
+        <div class="admin-section">
+            <h2><i class="fas fa-cog"></i> Cài Đặt Cache</h2>
+            <form method="POST" action="{{ url_for('admin.cache_management') }}">
+                <div class="form-group">
+                    <label for="cache_lifetime">Thời Gian Sống (ngày):</label>
+                    <input type="number" id="cache_lifetime" name="cache_lifetime" value="30" min="1" max="365" class="form-control">
+                    <small class="form-text text-muted">Các mục cache sẽ tự động bị xóa sau khoảng thời gian này nếu không được sử dụng.</small>
+                </div>
+                <div class="form-group">
+                    <label for="max_cache_size">Kích Thước Tối Đa (MB):</label>
+                    <input type="number" id="max_cache_size" name="max_cache_size" value="100" min="10" max="1000" class="form-control">
+                    <small class="form-text text-muted">Kích thước tối đa cho phép của cache. Các mục cũ nhất sẽ bị xóa khi vượt quá giới hạn này.</small>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="cache-action-btn">
+                        <i class="fas fa-save"></i> Lưu Cài Đặt
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %} 

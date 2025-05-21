@@ -300,6 +300,98 @@
         font-size: 14px;
     }
 
+    /* AI Check Option */
+    .ai-check-option {
+        margin: 15px auto;
+        background: #f8f9fa;
+        padding: 10px 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 400px;
+        font-size: 14px;
+    }
+    
+    .ai-check-option label {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        color: #555;
+        user-select: none;
+    }
+    
+    .ai-check-option input[type="checkbox"] {
+        margin-right: 8px;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+    
+    .ai-info-icon {
+        color: #F28123;
+        margin-left: 8px;
+        cursor: pointer;
+        position: relative;
+        font-size: 16px;
+    }
+    
+    .ai-info-tooltip {
+        position: absolute;
+        left: 50%;
+        bottom: 100%;
+        transform: translateX(-50%);
+        margin-bottom: 10px;
+        background: #051922;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 12px;
+        width: 260px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 100;
+        pointer-events: none;
+        line-height: 1.4;
+        text-align: left;
+    }
+    
+    .ai-info-tooltip:after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #051922 transparent transparent transparent;
+    }
+    
+    .ai-info-icon:hover .ai-info-tooltip {
+        opacity: 1;
+        visibility: visible;
+        bottom: 120%;
+    }
+    
+    /* Upload warning message */
+    .upload-warning-message {
+        display: flex;
+        align-items: center;
+        color: #856404;
+        font-weight: 600;
+        margin-bottom: 10px;
+        background-color: #fff3cd;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    
+    .upload-warning-message i {
+        margin-right: 10px;
+        font-size: 20px;
+        color: #ffc107;
+    }
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .search-results-grid {
@@ -377,6 +469,17 @@
                             <button class="recognition-mode-btn" id="multiModeBtn">
                                 <i class="fas fa-images"></i> Nhận Diện Đa Ảnh
                             </button>
+                        </div>
+                        
+                        <!-- AI Check Option -->
+                        <div class="ai-check-option">
+                            <label for="skipAICheck">
+                                <input type="checkbox" id="skipAICheck"> Bỏ qua kiểm tra AI
+                                <span class="ai-info-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="ai-info-tooltip">Hệ thống sẽ kiểm tra ảnh trước khi nhận diện để đảm bảo ảnh chứa hoa quả. Nếu bạn muốn bỏ qua bước này để tăng tốc độ xử lý, hãy đánh dấu lựa chọn này.</span>
+                                </span>
+                            </label>
                         </div>
                         
                         <!-- Drop Zone -->

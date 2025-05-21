@@ -1,0 +1,174 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}Chỉnh sửa người dùng - Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="dashboard-header">
+    <h2>Chỉnh sửa người dùng</h2>
+    <div class="header-actions">
+        <a href="{{ url_for('admin.user_management') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+</div>
+
+<!-- Alert Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {% if category == 'success' %}
+            <i class="fas fa-check-circle"></i>
+            {% elif category == 'warning' %}
+            <i class="fas fa-exclamation-triangle"></i>
+            {% elif category == 'danger' %}
+            <i class="fas fa-times-circle"></i>
+            {% else %}
+            <i class="fas fa-info-circle"></i>
+            {% endif %}
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Edit User Form -->
+<div class="content-card">
+    <div class="content-card-header">
+        <h3>Thông tin người dùng</h3>
+    </div>
+    <div class="content-card-body">
+        <form action="{{ url_for('admin.edit_user', user_id=user.id) }}" method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="profile-avatar" style="margin: 0 auto 20px;">
+                        {% if user.Avarta %}
+                        <img id="avatarPreview" src="{{ user.Avarta }}" alt="User Avatar">
+                        {% else %}
+                        <img id="avatarPreview" src="{{ url_for('static', filename='assets/img/avatar-default.jpg') }}" alt="User Avatar">
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taikhoan">Tên tài khoản</label>
+                        <input type="text" id="taikhoan" name="taikhoan" class="form-control" value="{{ user.taikhoan }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="matkhau">Mật khẩu (để trống nếu không thay đổi)</label>
+                        <input type="password" id="matkhau" name="matkhau" class="form-control">
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Avarta">URL Avatar</label>
+                        <input type="text" id="Avarta" name="Avarta" class="form-control" value="{{ user.Avarta }}" oninput="updateAvatarPreview()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="is_admin">Vai trò</label>
+                        <select id="is_admin" name="is_admin" class="form-control">
+                            <option value="0" {% if not user.is_admin %}selected{% endif %}>Người dùng</option>
+                            <option value="1" {% if user.is_admin %}selected{% endif %}>Admin</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>ID</label>
+                        <p>#{{ user.id }}</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Lượt nhận diện</label>
+                        <p id="recognitionCount">Đang tải...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group text-right">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Lưu thay đổi
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- User History -->
+<div class="dashboard-table-card mt-4">
+    <div class="table-card-header">
+        <h3>Lịch sử nhận diện gần đây</h3>
+    </div>
+    <div class="table-card-body">
+        <div id="userHistory" class="table-responsive">
+            <div class="text-center py-4">
+                <div class="spinner" style="width: 30px; height: 30px;"></div>
+                <p class="mt-2">Đang tải lịch sử nhận diện...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateAvatarPreview() {
+        const avatarUrl = document.getElementById('Avarta').value;
+        const avatarPreview = document.getElementById('avatarPreview');
+        
+        if (avatarUrl) {
+            avatarPreview.src = avatarUrl;
+        } else {
+            avatarPreview.src = "{{ url_for('static', filename='assets/img/avatar-default.jpg') }}";
+        }
+    }
+    
+    $(document).ready(function() {
+        // Load user recognition count
+        $.ajax({
+            url: '/admin/user/{{ user.id }}/stats',
+            method: 'GET',
+            success: function(data) {
+                $('#recognitionCount').text(data.recognition_count + ' lượt');
+            },
+            error: function() {
+                $('#recognitionCount').text('Không thể tải dữ liệu');
+            }
+        });
+        
+        // Load user history
+        $.ajax({
+            url: '/admin/user/{{ user.id }}/history',
+            method: 'GET',
+            success: function(data) {
+                if (data.history.length === 0) {
+                    $('#userHistory').html('<p class="text-center py-4">Không có lịch sử nhận diện.</p>');
+                    return;
+                }
+                
+                let html = '<table class="admin-table">';
+                html += '<thead><tr><th>ID</th><th>Hình ảnh</th><th>Kết quả</th><th>Độ chính xác</th><th>Thời gian</th></tr></thead>';
+                html += '<tbody>';
+                
+                data.history.forEach(function(item) {
+                    html += '<tr>';
+                    html += '<td>#' + item.id + '</td>';
+                    html += '<td><img src="' + item.hinh_anh + '" alt="Fruit" width="40" height="40" style="border-radius: 4px; object-fit: cover;"></td>';
+                    html += '<td>' + item.ten_san_pham + '</td>';
+                    html += '<td>' + (item.do_chinh_xac * 100).toFixed(1) + '%</td>';
+                    html += '<td>' + item.thoi_gian + '</td>';
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table>';
+                $('#userHistory').html(html);
+            },
+            error: function() {
+                $('#userHistory').html('<p class="text-center py-4 text-danger">Không thể tải lịch sử nhận diện. Vui lòng thử lại sau.</p>');
+            }
+        });
+    });
+</script>
+{% endblock %} 

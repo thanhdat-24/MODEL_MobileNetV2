@@ -1,0 +1,11 @@
+{
+    "model_path": "C:\\Users\\Admin\\Desktop\\MODEL_MobileNetV2\\saved_model\\fruits360_mobilenetv2.h5",
+    "img_size": [
+        100,
+        100
+    ],
+    "confidence_threshold": 0.5,
+    "max_predictions": 5,
+    "enable_image_check": true,
+    "last_updated": "2025-05-22T00:41:52.906760"
+}

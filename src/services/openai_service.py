@@ -1,10 +1,61 @@
 from openai import OpenAI
-from config import OPENAI_API_KEY, OPENAI_MODEL, OPENAI_MAX_TOKENS, OPENAI_TEMPERATURE, TIMEOUT
+from config import OPENAI_API_KEY, OPENAI_MODEL, OPENAI_VISION_MODEL, OPENAI_MAX_TOKENS, OPENAI_TEMPERATURE, TIMEOUT
 from services.supabase_service import get_supabase_client
 from datetime import datetime
 import json
+import base64
 
 client = OpenAI(api_key=OPENAI_API_KEY)
+
+def check_image_content(image_base64):
+    """Kiểm tra ảnh có phải hoa quả/rau củ, tối ưu hóa token và chi phí."""
+    try:
+        # Bỏ phần prefix "data:image/..." nếu có
+        if "base64," in image_base64:
+            image_base64 = image_base64.split("base64,")[1]
+        
+        # Tạo client OpenAI
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        
+        # Gửi yêu cầu với prompt đơn giản hơn
+        response = client.chat.completions.create(
+            model= OPENAI_VISION_MODEL,  # Sử dụng model hỗ trợ vision
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Nhiệm vụ của bạn là xác định ảnh có chứa hoa quả, rau củ, hoặc nông sản hay không. Chỉ trả lời YES hoặc NO."
+                },
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text", 
+                            "text": "Đây có phải ảnh hoa quả/rau củ/nông sản không? Chỉ trả lời YES hoặc NO."
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{image_base64}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            max_tokens=10  # Giảm max_tokens xuống, chỉ cần đủ cho YES/NO
+        )
+        
+        answer = response.choices[0].message.content.strip().upper()
+        
+        # Kiểm tra kết quả
+        if "YES" in answer:
+            return True, ""
+        else:
+            return False, ""
+            
+    except Exception as e:
+        print(f"Lỗi khi kiểm tra nội dung ảnh: {str(e)}")
+        # Khi có lỗi, mặc định từ chối ảnh để an toàn
+        return False, ""
 
 def generate_recipes_with_openai(fruit_type, num_recipes=3):
     try:
